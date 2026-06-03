@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.ServerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-06-03T21:43:16.813Z" hostname="parker" time="0.324">
+  <properties/>
+  <testcase name="test root endpoint" classname="com.example.ServerTest" time="0.31"/>
+  <testcase name="test fires endpoint" classname="com.example.ServerTest" time="0.007"/>
+  <testcase name="test filter endpoint" classname="com.example.ServerTest" time="0.005"/>
+  <system-out><![CDATA[2026-06-03 15:43:17.079 [DefaultDispatcher-worker-2 @call-context#3] INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-03 15:43:17.098 [DefaultDispatcher-worker-2 @call-context#3] INFO  io.ktor.test - Application started in 0.025 seconds.
+2026-06-03 15:43:17.099 [DefaultDispatcher-worker-3 @coroutine#5] INFO  io.ktor.test - Responding at http://localhost:80
+2026-06-03 15:43:17.099 [DefaultDispatcher-worker-3 @coroutine#5] INFO  io.ktor.test - Responding at https://localhost:443
+2026-06-03 15:43:17.127 [DefaultDispatcher-worker-5 @call-context#15] INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-03 15:43:17.128 [DefaultDispatcher-worker-5 @call-context#15] INFO  io.ktor.test - Application started in 0.001 seconds.
+2026-06-03 15:43:17.128 [DefaultDispatcher-worker-3 @coroutine#17] INFO  io.ktor.test - Responding at http://localhost:80
+2026-06-03 15:43:17.128 [DefaultDispatcher-worker-3 @coroutine#17] INFO  io.ktor.test - Responding at https://localhost:443
+2026-06-03 15:43:17.135 [DefaultDispatcher-worker-1 @call-context#27] INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-03 15:43:17.136 [DefaultDispatcher-worker-1 @call-context#27] INFO  io.ktor.test - Application started in 0.001 seconds.
+2026-06-03 15:43:17.136 [DefaultDispatcher-worker-4 @coroutine#29] INFO  io.ktor.test - Responding at http://localhost:80
+2026-06-03 15:43:17.136 [DefaultDispatcher-worker-4 @coroutine#29] INFO  io.ktor.test - Responding at https://localhost:443
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
