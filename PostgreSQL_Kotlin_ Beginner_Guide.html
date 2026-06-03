@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<!-- saved from url=(0240)file:///Users/jackcienkus/Library/Application%20Support/Claude/local-agent-mode-sessions/3ae8a842-2df2-4c66-870d-7540e35456fb/4e5db140-f506-4c01-a65a-a5f653920f2e/local_6fb08973-2b46-4d05-80dd-7d34f061b120/outputs/postgres-kotlin-guide.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostgreSQL + Kotlin: Beginner's Guide</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e1e4e8; line-height: 1.6; }
+
+  header { background: linear-gradient(135deg, #1a1f2e, #2d3561); padding: 40px 24px 32px; text-align: center; border-bottom: 1px solid #30363d; }
+  header h1 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  header p { color: #8b949e; font-size: 1rem; }
+  .badge { display: inline-block; background: #21262d; border: 1px solid #30363d; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; color: #8b949e; margin: 4px; }
+
+  .nav { display: flex; gap: 8px; justify-content: center; padding: 16px 24px; background: #161b22; border-bottom: 1px solid #21262d; flex-wrap: wrap; }
+  .nav button { background: transparent; border: 1px solid #30363d; color: #8b949e; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+  .nav button:hover, .nav button.active { background: #2d3561; border-color: #58a6ff; color: #58a6ff; }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 32px 24px; }
+
+  .step { display: none; }
+  .step.active { display: block; }
+
+  h2 { font-size: 1.5rem; color: #fff; margin-bottom: 8px; }
+  h3 { font-size: 1.1rem; color: #e1e4e8; margin: 24px 0 8px; }
+  p { color: #8b949e; margin-bottom: 12px; }
+
+  .card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .card-title { font-weight: 600; color: #e1e4e8; margin-bottom: 6px; font-size: 0.95rem; }
+
+  pre { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0; position: relative; }
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85rem; line-height: 1.7; }
+  .lang-label { position: absolute; top: 8px; right: 12px; font-size: 0.7rem; color: #484f58; font-family: monospace; text-transform: uppercase; }
+
+  .kw { color: #ff7b72; }
+  .str { color: #a5d6ff; }
+  .cm { color: #484f58; font-style: italic; }
+  .fn { color: #d2a8ff; }
+  .num { color: #79c0ff; }
+  .type { color: #ffa657; }
+  .sql-kw { color: #ff7b72; }
+  .sql-val { color: #a5d6ff; }
+
+  .checklist { list-style: none; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #21262d; color: #8b949e; font-size: 0.9rem; }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .tip { background: #162032; border-left: 3px solid #58a6ff; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 16px 0; font-size: 0.9rem; color: #79c0ff; }
+  .warn { background: #2d1f0e; border-left: 3px solid #f0883e; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 16px 0; font-size: 0.9rem; color: #f0883e; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+  .flow-box { background: #21262d; border: 1px solid #30363d; border-radius: 8px; padding: 10px 16px; font-size: 0.85rem; text-align: center; color: #e1e4e8; }
+  .flow-arrow { color: #484f58; font-size: 1.2rem; }
+
+  .pill { display: inline-block; background: #21262d; border-radius: 4px; padding: 2px 8px; font-size: 0.78rem; font-family: monospace; color: #a5d6ff; margin: 2px; }
+
+  .progress-bar { display: flex; gap: 6px; justify-content: center; padding: 16px 0; }
+  .progress-dot { width: 8px; height: 8px; border-radius: 50%; background: #21262d; transition: background 0.3s; }
+  .progress-dot.active { background: #58a6ff; }
+  .progress-dot.done { background: #3fb950; }
+
+  .nav-buttons { display: flex; justify-content: space-between; margin-top: 32px; padding-top: 24px; border-top: 1px solid #21262d; }
+  .btn { padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
+  .btn-primary { background: #238636; color: #fff; }
+  .btn-primary:hover { background: #2ea043; }
+  .btn-secondary { background: #21262d; color: #e1e4e8; border: 1px solid #30363d; }
+  .btn-secondary:hover { background: #30363d; }
+  .btn:disabled { opacity: 0.3; cursor: default; }
+
+  .quiz { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 20px; }
+  .quiz-q { font-weight: 600; color: #e1e4e8; margin-bottom: 14px; }
+  .quiz-opt { display: block; background: #21262d; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; cursor: pointer; color: #8b949e; font-size: 0.9rem; transition: all 0.2s; text-align: left; width: 100%; }
+  .quiz-opt:hover { border-color: #58a6ff; color: #e1e4e8; }
+  .quiz-opt.correct { background: #0d2116; border-color: #3fb950; color: #3fb950; }
+  .quiz-opt.wrong { background: #2d1016; border-color: #f85149; color: #f85149; }
+  .quiz-result { margin-top: 12px; font-size: 0.9rem; display: none; padding: 10px; border-radius: 6px; }
+  .quiz-result.show { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PostgreSQL + Kotlin</h1>
+  <p>A beginner's guide to querying a database with Kotlin</p>
+  <div style="margin-top: 12px;">
+    <span class="badge">5 steps</span>
+    <span class="badge">Raw SQL</span>
+    <span class="badge">JDBC</span>
+    <span class="badge">Beginner-friendly</span>
+  </div>
+</header>
+
+<nav class="nav">
+  <button class="active" onclick="goTo(0)">1. Big Picture</button>
+  <button onclick="goTo(1)" class="">2. Setup</button>
+  <button onclick="goTo(2)">3. Connect</button>
+  <button onclick="goTo(3)">4. Run Queries</button>
+  <button onclick="goTo(4)">5. Best Practices</button>
+</nav>
+
+<div class="progress-bar" id="progressBar">
+  <div class="progress-dot active" id="dot-0"></div>
+  <div class="progress-dot" id="dot-1"></div>
+  <div class="progress-dot" id="dot-2"></div>
+  <div class="progress-dot" id="dot-3"></div>
+  <div class="progress-dot" id="dot-4"></div>
+</div>
+
+<div class="container">
+
+  <!-- STEP 1: Big Picture -->
+  <div class="step active" id="step-0">
+    <h2>🗺 The Big Picture</h2>
+    <p>Before writing any code, let's understand what all the pieces are and how they fit together.</p>
+
+    <h3>What is PostgreSQL?</h3>
+    <p>PostgreSQL (often called "Postgres") is a <strong style="color:#e1e4e8">relational database</strong> — it stores data in tables with rows and columns, like a spreadsheet, but much more powerful. You talk to it using <strong style="color:#e1e4e8">SQL</strong> (Structured Query Language).</p>
+
+    <h3>How does Kotlin talk to it?</h3>
+    <p>Kotlin (running on the JVM) uses a standard called <strong style="color:#e1e4e8">JDBC</strong> (Java Database Connectivity) to communicate with databases. You need two things:</p>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🔌 JDBC Driver</div>
+        <p style="font-size:0.85rem">A library (JAR file) that knows how to speak PostgreSQL's network protocol. Think of it as a translator.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">🔗 Connection String</div>
+        <p style="font-size:0.85rem">A URL that tells the driver where your database lives, what it's named, and your credentials.</p>
+      </div>
+    </div>
+
+    <h3>The flow</h3>
+    <div class="flow">
+      <div class="flow-box">Your Kotlin code</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">JDBC API</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">PostgreSQL Driver</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">PostgreSQL Server</div>
+    </div>
+
+    <h3>Key vocabulary</h3>
+    <ul class="checklist">
+      <li><span class="icon">🗃</span><div><strong style="color:#e1e4e8">Table</strong> — where data is stored (like a spreadsheet tab)</div></li>
+      <li><span class="icon">📋</span><div><strong style="color:#e1e4e8">Row</strong> — one record (e.g., one user)</div></li>
+      <li><span class="icon">📊</span><div><strong style="color:#e1e4e8">Column</strong> — one field on a record (e.g., "email")</div></li>
+      <li><span class="icon">🔑</span><div><strong style="color:#e1e4e8">Primary Key</strong> — a unique ID for each row</div></li>
+      <li><span class="icon">📝</span><div><strong style="color:#e1e4e8">SQL Query</strong> — a command you send to the database (SELECT, INSERT, UPDATE, DELETE)</div></li>
+      <li><span class="icon">📦</span><div><strong style="color:#e1e4e8">ResultSet</strong> — what Kotlin gets back after a SELECT query (like a cursor over rows)</div></li>
+    </ul>
+
+    <div class="tip">💡 PostgreSQL runs as a separate program (a server) on your machine or in the cloud. Your Kotlin app connects to it over a network, even if they're on the same computer.</div>
+  </div>
+
+  <!-- STEP 2: Setup -->
+  <div class="step" id="step-1">
+    <h2>⚙️ Project Setup</h2>
+    <p>You need PostgreSQL installed, and your Kotlin project needs the JDBC driver as a dependency.</p>
+
+    <h3>1. Install PostgreSQL</h3>
+    <ul class="checklist">
+      <li><span class="icon">🍎</span><div><strong style="color:#e1e4e8">Mac:</strong> <span class="pill">brew install postgresql@16</span> then <span class="pill">brew services start postgresql@16</span></div></li>
+      <li><span class="icon">🪟</span><div><strong style="color:#e1e4e8">Windows:</strong> Download the installer from <span class="pill">postgresql.org/download</span></div></li>
+      <li><span class="icon">🐧</span><div><strong style="color:#e1e4e8">Linux:</strong> <span class="pill">sudo apt install postgresql</span></div></li>
+    </ul>
+
+    <h3>2. Create a database</h3>
+    <p>Open your terminal and run:</p>
+    <pre><code><span class="cm"># Log into PostgreSQL</span>
+psql -U postgres
+
+<span class="cm"># Inside psql, create a database</span>
+<span class="sql-kw">CREATE DATABASE</span> myapp;
+\q   <span class="cm">-- quit</span></code><span class="lang-label">psql</span></pre>
+
+    <h3>3. Add the driver to your Kotlin project</h3>
+    <p>In your <strong style="color:#e1e4e8">build.gradle.kts</strong> file, add the PostgreSQL JDBC driver:</p>
+    <pre><code>dependencies {
+    <span class="fn">implementation</span>(<span class="str">"org.postgresql:postgresql:42.7.3"</span>)
+}</code><span class="lang-label">build.gradle.kts</span></pre>
+
+    <div class="warn">⚠️ Make sure to sync/reload your Gradle project after adding the dependency so the driver downloads.</div>
+
+    <h3>4. Verify your connection details</h3>
+    <div class="card">
+      <div class="card-title">Default PostgreSQL connection info (local dev)</div>
+      <ul style="list-style:none; margin-top:8px;">
+        <li style="padding:4px 0; font-size:0.88rem; color:#8b949e;"><span class="pill">host</span> localhost</li>
+        <li style="padding:4px 0; font-size:0.88rem; color:#8b949e;"><span class="pill">port</span> 5432</li>
+        <li style="padding:4px 0; font-size:0.88rem; color:#8b949e;"><span class="pill">database</span> myapp</li>
+        <li style="padding:4px 0; font-size:0.88rem; color:#8b949e;"><span class="pill">user</span> postgres (or your system username)</li>
+        <li style="padding:4px 0; font-size:0.88rem; color:#8b949e;"><span class="pill">password</span> whatever you set during install</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STEP 3: Connect -->
+  <div class="step" id="step-2">
+    <h2>🔗 Connecting from Kotlin</h2>
+    <p>Here's how to open a connection to your PostgreSQL database.</p>
+
+    <h3>The connection URL format</h3>
+    <pre><code>jdbc:postgresql://<span class="type">HOST</span>:<span class="type">PORT</span>/<span class="type">DATABASE</span></code></pre>
+
+    <h3>Basic connection code</h3>
+    <pre><code><span class="kw">import</span> java.sql.DriverManager
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="kw">val</span> url  = <span class="str">"jdbc:postgresql://localhost:5432/myapp"</span>
+    <span class="kw">val</span> user = <span class="str">"postgres"</span>
+    <span class="kw">val</span> pass = <span class="str">"yourpassword"</span>
+
+    <span class="cm">// "use" automatically closes the connection when done</span>
+    DriverManager.<span class="fn">getConnection</span>(url, user, pass).<span class="fn">use</span> { conn -&gt;
+        <span class="fn">println</span>(<span class="str">"Connected! Is closed: </span>${conn.isClosed}<span class="str">"</span>)
+    }
+}</code><span class="lang-label">Kotlin</span></pre>
+
+    <div class="tip">💡 <code>.use { }</code> is Kotlin's way of ensuring a resource (like a database connection) is always closed when you're done, even if an error occurs. Always use it!</div>
+
+    <h3>Create a table to work with</h3>
+    <p>Let's create a simple <strong style="color:#e1e4e8">users</strong> table to run queries against. You can do this in psql or add it to your Kotlin code:</p>
+    <pre><code><span class="cm">-- Run this in psql or as a query in Kotlin</span>
+<span class="sql-kw">CREATE TABLE</span> users (
+    id    <span class="type">SERIAL PRIMARY KEY</span>,     <span class="cm">-- auto-incrementing ID</span>
+    name  <span class="type">TEXT NOT NULL</span>,
+    email <span class="type">TEXT UNIQUE NOT NULL</span>
+);</code><span class="lang-label">SQL</span></pre>
+
+    <h3>What is SERIAL?</h3>
+    <p><span class="pill">SERIAL</span> tells PostgreSQL to automatically generate a unique integer ID for each row. You never have to set it yourself.</p>
+  </div>
+
+  <!-- STEP 4: Run Queries -->
+  <div class="step" id="step-3">
+    <h2>📝 Running SQL Queries</h2>
+    <p>There are two main tools: <span class="pill">Statement</span> for static SQL, and <span class="pill">PreparedStatement</span> for SQL with variables. <strong style="color:#e1e4e8">Always use PreparedStatement when inserting user data.</strong></p>
+
+    <h3>INSERT — add a row</h3>
+    <pre><code><span class="kw">val</span> sql = <span class="str">"""
+    INSERT INTO users (name, email)
+    VALUES (?, ?)
+"""</span>
+
+conn.<span class="fn">prepareStatement</span>(sql).<span class="fn">use</span> { stmt -&gt;
+    stmt.<span class="fn">setString</span>(<span class="num">1</span>, <span class="str">"Alice"</span>)   <span class="cm">// first ?</span>
+    stmt.<span class="fn">setString</span>(<span class="num">2</span>, <span class="str">"alice@example.com"</span>)  <span class="cm">// second ?</span>
+    stmt.<span class="fn">executeUpdate</span>()           <span class="cm">// run it</span>
+}</code><span class="lang-label">Kotlin</span></pre>
+
+    <h3>SELECT — read rows</h3>
+    <pre><code><span class="kw">val</span> sql = <span class="str">"SELECT id, name, email FROM users"</span>
+
+conn.<span class="fn">createStatement</span>().<span class="fn">use</span> { stmt -&gt;
+    stmt.<span class="fn">executeQuery</span>(sql).<span class="fn">use</span> { rs -&gt;
+        <span class="kw">while</span> (rs.<span class="fn">next</span>()) {         <span class="cm">// move to next row</span>
+            <span class="kw">val</span> id    = rs.<span class="fn">getInt</span>(<span class="str">"id"</span>)
+            <span class="kw">val</span> name  = rs.<span class="fn">getString</span>(<span class="str">"name"</span>)
+            <span class="kw">val</span> email = rs.<span class="fn">getString</span>(<span class="str">"email"</span>)
+            <span class="fn">println</span>(<span class="str">"$id: $name ($email)"</span>)
+        }
+    }
+}</code><span class="lang-label">Kotlin</span></pre>
+
+    <h3>SELECT with a WHERE clause</h3>
+    <pre><code><span class="kw">val</span> sql = <span class="str">"SELECT * FROM users WHERE email = ?"</span>
+
+conn.<span class="fn">prepareStatement</span>(sql).<span class="fn">use</span> { stmt -&gt;
+    stmt.<span class="fn">setString</span>(<span class="num">1</span>, <span class="str">"alice@example.com"</span>)
+    stmt.<span class="fn">executeQuery</span>().<span class="fn">use</span> { rs -&gt;
+        <span class="kw">if</span> (rs.<span class="fn">next</span>()) {
+            <span class="fn">println</span>(<span class="str">"Found: </span>${rs.<span class="fn">getString</span>(<span class="str">"name"</span>)}<span class="str">"</span>)
+        }
+    }
+}</code><span class="lang-label">Kotlin</span></pre>
+
+    <h3>UPDATE and DELETE</h3>
+    <pre><code><span class="cm">// UPDATE</span>
+conn.<span class="fn">prepareStatement</span>(<span class="str">"UPDATE users SET name = ? WHERE id = ?"</span>).<span class="fn">use</span> { stmt -&gt;
+    stmt.<span class="fn">setString</span>(<span class="num">1</span>, <span class="str">"Alicia"</span>)
+    stmt.<span class="fn">setInt</span>(<span class="num">2</span>, <span class="num">1</span>)
+    <span class="kw">val</span> rowsAffected = stmt.<span class="fn">executeUpdate</span>()
+    <span class="fn">println</span>(<span class="str">"Updated $rowsAffected row(s)"</span>)
+}
+
+<span class="cm">// DELETE</span>
+conn.<span class="fn">prepareStatement</span>(<span class="str">"DELETE FROM users WHERE id = ?"</span>).<span class="fn">use</span> { stmt -&gt;
+    stmt.<span class="fn">setInt</span>(<span class="num">1</span>, <span class="num">1</span>)
+    stmt.<span class="fn">executeUpdate</span>()
+}</code><span class="lang-label">Kotlin</span></pre>
+
+    <div class="warn">⚠️ Never build SQL strings with string interpolation like <code>"SELECT * FROM users WHERE id = $id"</code>. This opens you up to SQL injection attacks. Always use <code>?</code> placeholders.</div>
+
+    <h3>Quick quiz</h3>
+    <div class="quiz">
+      <div class="quiz-q">Which method do you call to run a SELECT query on a PreparedStatement?</div>
+      <button class="quiz-opt" onclick="answer(this, false)">executeUpdate()</button>
+      <button class="quiz-opt" onclick="answer(this, true)">executeQuery()</button>
+      <button class="quiz-opt" onclick="answer(this, false)">execute()</button>
+      <div class="quiz-result" id="quiz-result"></div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Best Practices -->
+  <div class="step" id="step-4">
+    <h2>✅ Best Practices &amp; Next Steps</h2>
+    <p>A few habits that will save you headaches as you build real projects.</p>
+
+    <h3>Dos and Don'ts</h3>
+    <ul class="checklist">
+      <li><span class="icon">✅</span><div><strong style="color:#e1e4e8">Always use .use { }</strong> to close connections, statements, and result sets automatically.</div></li>
+      <li><span class="icon">✅</span><div><strong style="color:#e1e4e8">Always use PreparedStatement</strong> when your query includes any variable data.</div></li>
+      <li><span class="icon">✅</span><div><strong style="color:#e1e4e8">Use a connection pool</strong> (like HikariCP) in real apps so you're not opening/closing a new connection for every query.</div></li>
+      <li><span class="icon">✅</span><div><strong style="color:#e1e4e8">Store credentials in environment variables</strong>, not hardcoded in source code.</div></li>
+      <li><span class="icon">❌</span><div><strong style="color:#e1e4e8">Don't build SQL with string templates</strong> — use <code>?</code> placeholders instead.</div></li>
+      <li><span class="icon">❌</span><div><strong style="color:#e1e4e8">Don't leave connections open</strong> — always close them in a finally block or with <code>.use { }</code>.</div></li>
+    </ul>
+
+    <h3>Using a connection pool (recommended for real projects)</h3>
+    <pre><code><span class="cm">// build.gradle.kts</span>
+<span class="fn">implementation</span>(<span class="str">"com.zaxxer:HikariCP:5.1.0"</span>)
+
+<span class="cm">// Kotlin setup</span>
+<span class="kw">val</span> config = HikariConfig().<span class="fn">apply</span> {
+    jdbcUrl  = <span class="str">"jdbc:postgresql://localhost:5432/myapp"</span>
+    username = System.<span class="fn">getenv</span>(<span class="str">"DB_USER"</span>)
+    password = System.<span class="fn">getenv</span>(<span class="str">"DB_PASS"</span>)
+    maximumPoolSize = <span class="num">10</span>
+}
+<span class="kw">val</span> dataSource = <span class="fn">HikariDataSource</span>(config)
+
+<span class="cm">// Use it the same way</span>
+dataSource.<span class="fn">connection</span>.<span class="fn">use</span> { conn -&gt;
+    <span class="cm">// your queries here</span>
+}</code><span class="lang-label">Kotlin</span></pre>
+
+    <h3>Where to go next</h3>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">📘 Learn more SQL</div>
+        <p style="font-size:0.85rem">Try <strong style="color:#e1e4e8">JOINs</strong> to combine tables, <strong style="color:#e1e4e8">GROUP BY</strong> to aggregate data, and <strong style="color:#e1e4e8">transactions</strong> to group multiple queries atomically.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">🛠 Try an ORM next</div>
+        <p style="font-size:0.85rem">Once you're comfortable with raw SQL, <strong style="color:#e1e4e8">Kotlin Exposed</strong> is a great library that lets you write database queries in Kotlin instead of SQL strings.</p>
+      </div>
+    </div>
+
+    <div class="tip">🎉 You now know everything you need to connect Kotlin to PostgreSQL and run all four fundamental SQL operations: SELECT, INSERT, UPDATE, and DELETE.</div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" id="prevBtn" onclick="navigate(-1)" disabled="">← Previous</button>
+    <button class="btn btn-primary" id="nextBtn" onclick="navigate(1)">Next →</button>
+  </div>
+
+</div>
+
+<script>
+  let current = 0;
+  const total = 5;
+
+  function goTo(index) {
+    document.getElementById('step-' + current).classList.remove('active');
+    document.getElementById('dot-' + current).classList.remove('active');
+    document.getElementById('dot-' + current).classList.add('done');
+
+    current = index;
+    document.getElementById('step-' + current).classList.add('active');
+
+    // Update dots
+    for (let i = 0; i < total; i++) {
+      const dot = document.getElementById('dot-' + i);
+      dot.classList.remove('active', 'done');
+      if (i < current) dot.classList.add('done');
+      else if (i === current) dot.classList.add('active');
+    }
+
+    // Update nav buttons
+    document.querySelectorAll('.nav button').forEach((btn, i) => {
+      btn.classList.toggle('active', i === current);
+    });
+
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === total - 1;
+    document.getElementById('nextBtn').textContent = current === total - 1 ? '🎉 Done!' : 'Next →';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function navigate(dir) {
+    const next = current + dir;
+    if (next >= 0 && next < total) goTo(next);
+  }
+
+  function answer(btn, correct) {
+    const opts = document.querySelectorAll('.quiz-opt');
+    const result = document.getElementById('quiz-result');
+    opts.forEach(o => o.disabled = true);
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    if (!correct) {
+      opts.forEach(o => { if (o.textContent.includes('executeQuery')) o.classList.add('correct'); });
+    }
+    result.classList.add('show');
+    result.style.background = correct ? '#0d2116' : '#2d1016';
+    result.style.color = correct ? '#3fb950' : '#f85149';
+    result.textContent = correct
+      ? '✓ Correct! executeQuery() returns a ResultSet with rows. Use executeUpdate() for INSERT/UPDATE/DELETE.'
+      : '✗ Not quite. executeUpdate() is for write operations. executeQuery() returns a ResultSet for SELECT.';
+  }
+</script>
+
+
+
+</body></html>
