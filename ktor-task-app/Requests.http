@@ -1,0 +1,12 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+Accept: application/json
+###
+
+
+### GET request to example server
+GET https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location
+Accept: application/json
+###
+

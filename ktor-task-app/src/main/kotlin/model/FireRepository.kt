@@ -2,7 +2,10 @@ package com.example.model
 
 import java.net.URL
 import kotlinx.serialization.json.*
-
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 
 
 object FireRepository {
@@ -22,8 +25,16 @@ object FireRepository {
         it.name.equals(name, ignoreCase = true)
     }
 
+
     fun getFires(url: String): List<Fire> {
         val fireList: MutableList<Fire> = mutableListOf()
+
+        """val client = HttpClient.newHttpClient()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .GET()
+            .header("Content-Type", "application/json")
+            .build()"""
 
         val rawJson: String = URL(url).readText()
         val element = Json.parseToJsonElement(rawJson).jsonObject

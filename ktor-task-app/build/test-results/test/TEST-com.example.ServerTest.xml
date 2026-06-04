@@ -1,21 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.ServerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-06-04T16:46:45.831Z" hostname="parker" time="1.104">
+<testsuite name="com.example.ServerTest" tests="3" skipped="0" failures="1" errors="0" timestamp="2026-06-04T16:52:01.656Z" hostname="parker" time="4.353">
   <properties/>
-  <testcase name="test root endpoint" classname="com.example.ServerTest" time="0.284"/>
-  <testcase name="test fires endpoint" classname="com.example.ServerTest" time="0.813"/>
-  <testcase name="test filter endpoint" classname="com.example.ServerTest" time="0.006"/>
-  <system-out><![CDATA[2026-06-04 10:46:46.074 [DefaultDispatcher-worker-2 @call-context#3] INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-04 10:46:46.090 [DefaultDispatcher-worker-2 @call-context#3] INFO  io.ktor.test - Application started in 0.02 seconds.
-2026-06-04 10:46:46.091 [DefaultDispatcher-worker-3 @coroutine#5] INFO  io.ktor.test - Responding at http://localhost:80
-2026-06-04 10:46:46.091 [DefaultDispatcher-worker-3 @coroutine#5] INFO  io.ktor.test - Responding at https://localhost:443
-2026-06-04 10:46:46.118 [DefaultDispatcher-worker-3 @call-context#15] INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-04 10:46:46.119 [DefaultDispatcher-worker-3 @call-context#15] INFO  io.ktor.test - Application started in 0.001 seconds.
-2026-06-04 10:46:46.119 [DefaultDispatcher-worker-4 @coroutine#17] INFO  io.ktor.test - Responding at http://localhost:80
-2026-06-04 10:46:46.119 [DefaultDispatcher-worker-4 @coroutine#17] INFO  io.ktor.test - Responding at https://localhost:443
-2026-06-04 10:46:46.932 [DefaultDispatcher-worker-3 @call-context#27] INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-04 10:46:46.933 [DefaultDispatcher-worker-3 @call-context#27] INFO  io.ktor.test - Application started in 0.001 seconds.
-2026-06-04 10:46:46.933 [DefaultDispatcher-worker-6 @coroutine#29] INFO  io.ktor.test - Responding at http://localhost:80
-2026-06-04 10:46:46.934 [DefaultDispatcher-worker-6 @coroutine#29] INFO  io.ktor.test - Responding at https://localhost:443
+  <testcase name="test root endpoint" classname="com.example.ServerTest" time="0.305"/>
+  <testcase name="test fires endpoint" classname="com.example.ServerTest" time="4.04"/>
+  <testcase name="test filter endpoint" classname="com.example.ServerTest" time="0.006">
+    <failure message="java.lang.AssertionError: expected:&lt;200 OK&gt; but was:&lt;404 Not Found&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;200 OK&gt; but was:&lt;404 Not Found&gt;
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at kotlin.test.junit.JUnitAsserter.assertEquals(JUnitSupport.kt:32)
+	at kotlin.test.AssertionsKt__AssertionsKt.assertEquals(Assertions.kt:63)
+	at kotlin.test.AssertionsKt.assertEquals(Unknown Source)
+	at kotlin.test.AssertionsKt__AssertionsKt.assertEquals$default(Assertions.kt:62)
+	at kotlin.test.AssertionsKt.assertEquals$default(Unknown Source)
+	at com.example.ServerTest$test filter endpoint$1.invokeSuspend(ServerTest.kt:27)
+	at _COROUTINE._BOUNDARY._(CoroutineDebugging.kt:42)
+	at io.ktor.server.testing.TestApplicationKt.runTestApplication(TestApplication.kt:518)
+	at io.ktor.server.testing.TestApplicationKt$testApplication$1.invokeSuspend(TestApplication.kt:502)
+	at io.ktor.test.dispatcher.TestCommonKt$runTestWithRealTime$1.invokeSuspend(TestCommon.kt:49)
+	at kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt$runTest$2$1$1.invokeSuspend(TestBuilders.kt:317)
+Caused by: java.lang.AssertionError: expected:&lt;200 OK&gt; but was:&lt;404 Not Found&gt;
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at kotlin.test.junit.JUnitAsserter.assertEquals(JUnitSupport.kt:32)
+	at kotlin.test.AssertionsKt__AssertionsKt.assertEquals(Assertions.kt:63)
+	at kotlin.test.AssertionsKt.assertEquals(Unknown Source)
+	at kotlin.test.AssertionsKt__AssertionsKt.assertEquals$default(Assertions.kt:62)
+	at kotlin.test.AssertionsKt.assertEquals$default(Unknown Source)
+	at com.example.ServerTest$test filter endpoint$1.invokeSuspend(ServerTest.kt:27)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:807)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+</failure>
+  </testcase>
+  <system-out><![CDATA[2026-06-04 10:52:01.920 [DefaultDispatcher-worker-2 @call-context#3] INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-04 10:52:01.938 [DefaultDispatcher-worker-2 @call-context#3] INFO  io.ktor.test - Application started in 0.023 seconds.
+2026-06-04 10:52:01.939 [DefaultDispatcher-worker-3 @coroutine#5] INFO  io.ktor.test - Responding at http://localhost:80
+2026-06-04 10:52:01.939 [DefaultDispatcher-worker-3 @coroutine#5] INFO  io.ktor.test - Responding at https://localhost:443
+2026-06-04 10:52:01.965 [DefaultDispatcher-worker-6 @call-context#15] INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-04 10:52:01.966 [DefaultDispatcher-worker-6 @call-context#15] INFO  io.ktor.test - Application started in 0.001 seconds.
+2026-06-04 10:52:01.966 [DefaultDispatcher-worker-1 @coroutine#17] INFO  io.ktor.test - Responding at http://localhost:80
+2026-06-04 10:52:01.966 [DefaultDispatcher-worker-1 @coroutine#17] INFO  io.ktor.test - Responding at https://localhost:443
+2026-06-04 10:52:06.005 [DefaultDispatcher-worker-1 @call-context#27] INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-04 10:52:06.006 [DefaultDispatcher-worker-1 @call-context#27] INFO  io.ktor.test - Application started in 0.001 seconds.
+2026-06-04 10:52:06.006 [DefaultDispatcher-worker-6 @coroutine#29] INFO  io.ktor.test - Responding at http://localhost:80
+2026-06-04 10:52:06.006 [DefaultDispatcher-worker-6 @coroutine#29] INFO  io.ktor.test - Responding at https://localhost:443
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
