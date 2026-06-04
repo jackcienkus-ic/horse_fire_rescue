@@ -3,15 +3,11 @@ package com.example.model
 import kotlinx.serialization.Serializable
 
 
-enum class County {
-    Jefferson, Cassia, Lincoln, Converse, Albany
-}
-
 @Serializable
 data class Fire(
     val name: String,
-    val size: Int,
-    val county: County
+    val size: Double?,
+    val county: String
 )
 
 fun Fire.fireAsRow() = """
