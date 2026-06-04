@@ -52,12 +52,15 @@ fun Application.configureRouting() {
 
             for (feature in features) {
                 val f = feature.jsonObject
+                val data = f.jsonObject["data"]!!.jsonObject
                 val name = f["name"]?.jsonPrimitive?.contentOrNull ?: "Unknown"
+                val size = (data["acreage"] as? JsonPrimitive)?.doubleOrNull
                 val lat  = f["lat"]?.jsonPrimitive?.double ?: 0.0
                 val lng  = f["lng"]?.jsonPrimitive?.double ?: 0.0
-
-                val currentFire = Fire(name, lat, lng)
-                linkedList.add(currentFire)
+                if (lat in 36.99898465873948..41.00243787543735 && lng in -109.04517050258288 .. -102.05161732003343) {
+                    val currentFire = Fire(name, size, lat, lng)
+                    linkedList.add(currentFire)
+                }
             }
             call.respond(FreeMarkerContent("fires.ftl", mapOf("data" to linkedList), ""))
         }
