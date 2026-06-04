@@ -20,5 +20,11 @@ class ServerTest {
         configure()
         assertEquals(HttpStatusCode.OK, client.get("/fires").status)
     }
+    @Test
+    fun `test html endpoint`() = testApplication {
+        // loads default configuration
+        configure()
+        assertEquals(HttpStatusCode.OK, client.get("/html-freemarker").status)
+    }
 
 }

@@ -14,7 +14,7 @@ fun Application.configureRouting() {
             call.respond(FreeMarkerContent("index.ftl", mapOf("data" to IndexData(listOf(1, 2, 3))), ""))
         }
         get("/fires"){
-            call.respond(FreeMarkerContent("fires.ftl", mapOf("data" to FireNames(listOf("Seven Cabins", "Jefferson", "Trailhead Prescribed"))), ""))
+            call.respond(FreeMarkerContent("fires.ftl", mapOf("data" to Fires(listOf("Seven Cabins", "Jefferson", "Trailhead Prescribed"), listOf(1.1, 2.2, 3.3), listOf(4.4, 5.5, 6.6))), ""))
         }
     }
 }

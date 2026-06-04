@@ -6,4 +6,4 @@ import io.ktor.server.freemarker.*
 import io.ktor.server.response.*
 
 data class IndexData(val items: List<Int>)
-data class FireNames(val fires: List<String>)
+data class Fires(val fires: List<String>, val lat: List<Double>, val lng: List<Double>)
