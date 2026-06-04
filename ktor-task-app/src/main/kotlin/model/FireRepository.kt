@@ -35,7 +35,9 @@ object FireRepository {
             val name = props["IncidentName"]?.jsonPrimitive?.contentOrNull ?: "Unknown"
             val size = props["IncidentSize"]?.jsonPrimitive?.doubleOrNull
             val county = props["POOCounty"]?.jsonPrimitive?.contentOrNull ?: "Unknown"
-            val newFireInfo = Fire(name, size, county)
+            val longitude = coords?.get(0)?.jsonPrimitive?.double ?: 0.0
+            val latitude = coords?.get(1)?.jsonPrimitive?.double ?: 0.0
+            val newFireInfo = Fire(name, size, county, longitude, latitude)
             fireList.add(newFireInfo)
         }
         return fireList

@@ -22,7 +22,7 @@ fun Application.configureRouting() {
             )
         }
 
-        get("/fires/{countyA}/{countyB}"){
+        get("/fires/filter/{countyA}/{countyB}"){
             val ca=call.parameters["countyA"]
             val cb=call.parameters["countyB"]
             val tags: List<String?> = listOf(ca, cb)
@@ -33,15 +33,13 @@ fun Application.configureRouting() {
             )
         }
 
-        get("/test/jsonread") {            val fireListDisplay = getFires("https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Incident_Locations_Current/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson")
-
-            call.respondText(
-                contentType = ContentType.parse("text/html"),
-                text = fireListDisplay.fireAsTable()
-            )
+        get("/test/jsonread") {
+            val fireListDisplay = getFires("https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Incident_Locations_Current/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson")
+            val textToDisplay=fireListDisplay.toString()
+            call.respondText(textToDisplay)
         }
 
-        get("/fires/byCounty/{county?}") {
+        get("/fires/filter/{county?}") {
             val countyAsText = call.parameters["county"]
             if (countyAsText == null) {
                 call.respond(HttpStatusCode.BadRequest)
