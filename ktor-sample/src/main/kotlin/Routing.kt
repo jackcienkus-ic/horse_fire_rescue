@@ -68,6 +68,7 @@ fun Application.configureRouting() {
                     linkedList.add(currentFire)
                 }
             }
+            // helloworld
             call.respond(FreeMarkerContent("fires.ftl", mapOf("data" to linkedList, "region" to region), ""))
         }
     }
