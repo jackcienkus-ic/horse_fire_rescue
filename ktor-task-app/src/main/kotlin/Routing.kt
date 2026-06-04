@@ -6,7 +6,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import com.example.model.*
 import io.ktor.http.HttpStatusCode
-import com.example.model.TaskRepository.getFires
+import com.example.model.FireRepository.getFires
 
 
 fun Application.configureRouting() {
@@ -15,7 +15,7 @@ fun Application.configureRouting() {
             call.respondText("Hello World!")
         }
         get("/fires") {
-            val fires = TaskRepository.allFires()
+            val fires = FireRepository.allFires()
             call.respondText(
                 contentType = ContentType.parse("text/html"),
                 text = fires.fireAsTable()
@@ -26,7 +26,7 @@ fun Application.configureRouting() {
             val ca=call.parameters["countyA"]
             val cb=call.parameters["countyB"]
             val tags: List<String?> = listOf(ca, cb)
-            val fires=TaskRepository.firesByCounties(tags)
+            val fires=FireRepository.firesByCounties(tags)
             call.respondText(
                 contentType = ContentType.parse("text/html"),
                 text = fires.fireAsTable()
@@ -49,7 +49,7 @@ fun Application.configureRouting() {
             }
 
             try {
-                val fires = TaskRepository.firesByCounty(countyAsText)
+                val fires = FireRepository.firesByCounty(countyAsText)
 
                 if (fires.isEmpty()) {
                     call.respond(HttpStatusCode.NotFound)

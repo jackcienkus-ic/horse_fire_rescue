@@ -5,7 +5,7 @@ import kotlinx.serialization.json.*
 
 
 
-object TaskRepository {
+object FireRepository {
 
     val fires = getFires("https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Incident_Locations_Current/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson")
     fun allFires(): List<Fire> = fires.toList()
@@ -37,9 +37,7 @@ object TaskRepository {
             val county = props["POOCounty"]?.jsonPrimitive?.contentOrNull ?: "Unknown"
             val newFireInfo = Fire(name, size, county)
             fireList.add(newFireInfo)
-            println(newFireInfo)
         }
-        print(fireList)
         return fireList
     }
 
