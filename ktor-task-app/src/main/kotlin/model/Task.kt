@@ -1,9 +1,13 @@
 package com.example.model
 
+import kotlinx.serialization.Serializable
+
+
 enum class County {
     Jefferson, Cassia, Lincoln, Converse, Albany
 }
 
+@Serializable
 data class Fire(
     val name: String,
     val size: Int,

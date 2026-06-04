@@ -13,6 +13,10 @@ object TaskRepository {
         it.county == county
     }
 
+    fun firesByCounties(counties: List<String?>) = fires.filter {
+        it.county.toString() == counties[0] || it.county.toString() == counties[1]
+    }
+
     fun fireByName(name: String) = fires.find {
         it.name.equals(name, ignoreCase = true)
     }

@@ -21,6 +21,17 @@ fun Application.configureRouting() {
             )
         }
 
+        get("/filter/{countyA}/{countyB}"){
+            val ca=call.parameters["countyA"]
+            val cb=call.parameters["countyB"]
+            val tags: List<String?> = listOf(ca, cb)
+            val fires=TaskRepository.firesByCounties(tags)
+            call.respondText(
+                contentType = ContentType.parse("text/html"),
+                text = fires.fireAsTable()
+            )
+        }
+
         get("/fires/byCounty/{county?}") {
             val countyAsText = call.parameters["county"]
             if (countyAsText == null) {
