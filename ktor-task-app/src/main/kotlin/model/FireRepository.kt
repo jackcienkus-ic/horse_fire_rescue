@@ -10,46 +10,39 @@ import java.net.http.HttpResponse
 
 object FireRepository {
 
-    val fires = getFires("https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Incident_Locations_Current/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson")
-    fun allFires(): List<Fire> = fires.toList()
+    fun allFires(url: String): List<Fire> = getFires(url, 100.0).toList()
 
-    fun firesByCounty(county: String) = fires.filter {
-        it.county == county
-    }
-
-    fun firesByCounties(counties: List<String?>) = fires.filter {
-        it.county == counties[0] || it.county == counties[1]
-    }
-
-    fun fireByName(name: String) = fires.find {
-        it.name.equals(name, ignoreCase = true)
-    }
-
-
-    fun getFires(url: String): List<Fire> {
+    fun getFires(url: String, boundary: Double): List<Fire> {
         val fireList: MutableList<Fire> = mutableListOf()
 
-        """val client = HttpClient.newHttpClient()
+        val client = HttpClient.newHttpClient()
         val request = HttpRequest.newBuilder()
             .uri(URI.create(url))
             .GET()
-            .header("Content-Type", "application/json")
-            .build()"""
+            .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+            .header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36")
+            .header("Accept-Language", "en-US,en;q=0.9")
+            .build()
 
-        val rawJson: String = URL(url).readText()
-        val element = Json.parseToJsonElement(rawJson).jsonObject
-        val features = element["features"]!!.jsonArray
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+        val body = response.body() ?: error("Empty Response")
+        val features = Json.parseToJsonElement(body).jsonArray
+
         for (feature in features) {
-            val props = feature.jsonObject["properties"]!!.jsonObject
-            val coords = feature.jsonObject["geometry"]?.jsonObject
-                ?.get("coordinates")?.jsonArray
-            val name = props["IncidentName"]?.jsonPrimitive?.contentOrNull ?: "Unknown"
-            val size = props["IncidentSize"]?.jsonPrimitive?.doubleOrNull
-            val county = props["POOCounty"]?.jsonPrimitive?.contentOrNull ?: "Unknown"
-            val longitude = coords?.get(0)?.jsonPrimitive?.double ?: 0.0
-            val latitude = coords?.get(1)?.jsonPrimitive?.double ?: 0.0
-            val newFireInfo = Fire(name, size, county, longitude, latitude)
-            fireList.add(newFireInfo)
+            val f = feature.jsonObject
+            val name = f["name"]?.jsonPrimitive?.contentOrNull ?: "Unknown"
+            val data = f.jsonObject["data"]!!.jsonObject
+            val size = (data["acreage"] as? JsonPrimitive)?.doubleOrNull
+            val longitude = f["lng"]?.jsonPrimitive?.double ?: 0.0
+            val latitude = f["lat"]?.jsonPrimitive?.double ?: 0.0
+
+            if (latitude in (37.0-boundary)..(41.0+boundary) && longitude in (-109.046667-boundary)..(-102.046667+boundary)){
+                val newFireInfo = Fire(name, size, longitude, latitude)
+                fireList.add(newFireInfo)
+            }
+
+
+
         }
         return fireList
     }
