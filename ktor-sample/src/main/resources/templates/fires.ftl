@@ -103,6 +103,18 @@
     <p>Live wildfire data from Watch Duty</p>
 </header>
 
+<form method="get" action="/fires" style="padding: 16px 32px; background: #fff; border-bottom: 1px solid #e5e7eb;">
+    <label for="region" style="font-weight: 600; margin-right: 8px;">Radius Expand (in miles):</label>
+    <input type="number" name="region" id="region" value="${region}" min="0" max="3600" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #d1d5db;">
+    <input type="submit" value="Go" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #d1d5db; background: #1f2937; color: white; cursor: pointer; margin-left: 8px;">
+<#--    <select name="region" id="region" onchange="this.form.submit()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #d1d5db;">-->
+<#--        <option value="colorado"  ${(region == "colorado")?then("selected", "")}>Colorado</option>-->
+<#--        <option value="southwest" ${(region == "southwest")?then("selected", "")}>Southwest (CO, UT, AZ, NM)</option>-->
+<#--        <option value="west"      ${(region == "west")?then("selected", "")}>Western US</option>-->
+<#--        <option value="all"       ${(region == "all")?then("selected", "")}>All US</option>-->
+<#--    </select>-->
+</form>
+
 <main>
     <table>
         <thead>

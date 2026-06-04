@@ -10,6 +10,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import kotlin.math.cos
 
 fun Application.configureRouting() {
     routing {
@@ -48,7 +49,11 @@ fun Application.configureRouting() {
 
             val features = Json { ignoreUnknownKeys = true }
                 .parseToJsonElement(body).jsonArray
+            val region = call.request.queryParameters["region"] ?: "0.0"
             val linkedList = LinkedList<Fire>()
+            val mileDiff = region.toDoubleOrNull() ?: return@get call.respondText(
+                "Missing or invalid parameter. Must be a valid Double."
+            )
 
             for (feature in features) {
                 val f = feature.jsonObject
@@ -57,12 +62,13 @@ fun Application.configureRouting() {
                 val size = (data["acreage"] as? JsonPrimitive)?.doubleOrNull
                 val lat  = f["lat"]?.jsonPrimitive?.double ?: 0.0
                 val lng  = f["lng"]?.jsonPrimitive?.double ?: 0.0
-                if (lat in 36.99898465873948..41.00243787543735 && lng in -109.04517050258288 .. -102.05161732003343) {
+                if (lat in (36.99 - (mileDiff/69.1))..(41.00 + (mileDiff/69.1))
+                    && lng in (-109.05 - (mileDiff/(69.17*(cos(lat)))))..(-102.05 + (mileDiff/(69.17*(cos(lat)))))) {
                     val currentFire = Fire(name, size, lat, lng)
                     linkedList.add(currentFire)
                 }
             }
-            call.respond(FreeMarkerContent("fires.ftl", mapOf("data" to linkedList), ""))
+            call.respond(FreeMarkerContent("fires.ftl", mapOf("data" to linkedList, "region" to region), ""))
         }
     }
 }
