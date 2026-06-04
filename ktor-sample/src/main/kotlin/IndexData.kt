@@ -7,3 +7,4 @@ import io.ktor.server.response.*
 
 data class IndexData(val items: List<Int>)
 data class Fires(val fires: List<String>, val lat: List<Double>, val lng: List<Double>)
+data class Fire(val name: String, val lat: Double, val lng: Double)

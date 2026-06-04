@@ -1,2 +1,4 @@
 Manifest-Version: 1.0
+Main-Class: io.ktor.server.jetty.jakarta.EngineMain
+Multi-Release: true
 

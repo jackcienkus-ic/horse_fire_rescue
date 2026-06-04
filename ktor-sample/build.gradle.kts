@@ -19,6 +19,7 @@ dependencies {
     implementation(ktorLibs.server.freemarker)
     implementation(ktorLibs.server.jetty)
     implementation(libs.logback.classic)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)
