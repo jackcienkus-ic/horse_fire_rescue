@@ -10,9 +10,29 @@ import java.net.http.HttpResponse
 
 object FireRepository {
 
-    fun allFires(url: String): List<Fire> = getFires(url, 100.0).toList()
+    fun allFires(url: String, countyCheck: Boolean): List<Fire> = getFires(url, 100.0, countyCheck)
 
-    fun getFires(url: String, boundary: Double): List<Fire> {
+    fun getCounty(latitude: Double, longitude: Double): String {
+        val countyUrl = "https://geocoding.geo.census.gov/geocoder/geographies/coordinates?x=$longitude&y=$latitude&benchmark=Public_AR_Current&vintage=Current_Current&layers=Counties&format=json"
+        val client = HttpClient.newHttpClient()
+        val countyRequest = HttpRequest.newBuilder()
+            .uri(URI.create(countyUrl))
+            .GET()
+            .build()
+        val countyResponse = client.send(countyRequest, HttpResponse.BodyHandlers.ofString())
+        val countyBody = countyResponse.body() ?: return "unknown"
+        val countyRoot = Json.parseToJsonElement(countyBody).jsonObject
+        val counties = countyRoot["result"]
+            ?.jsonObject?.get("geographies")
+            ?.jsonObject?.get("Counties")
+            ?.jsonArray
+        print(counties)
+        return counties?.firstOrNull()
+            ?.jsonObject?.get("NAME")
+            ?.jsonPrimitive?.contentOrNull ?: "Unknown:"
+    }
+
+    fun getFires(url: String, boundary: Double, countyCheck: Boolean): List<Fire> {
         val fireList: MutableList<Fire> = mutableListOf()
 
         val client = HttpClient.newHttpClient()
@@ -33,18 +53,21 @@ object FireRepository {
             val name = f["name"]?.jsonPrimitive?.contentOrNull ?: "Unknown"
             val data = f.jsonObject["data"]!!.jsonObject
             val size = (data["acreage"] as? JsonPrimitive)?.doubleOrNull
+
+
             val longitude = f["lng"]?.jsonPrimitive?.double ?: 0.0
             val latitude = f["lat"]?.jsonPrimitive?.double ?: 0.0
 
             if (latitude in (37.0-boundary)..(41.0+boundary) && longitude in (-109.046667-boundary)..(-102.046667+boundary)){
-                val newFireInfo = Fire(name, size, longitude, latitude)
+                var county = "unknown"
+                if (countyCheck){
+                    county = getCounty(latitude, longitude)
+                }
+
+                val newFireInfo = Fire(name, size, longitude, latitude, county)
                 fireList.add(newFireInfo)
             }
-
-
-
         }
         return fireList
     }
-
 }

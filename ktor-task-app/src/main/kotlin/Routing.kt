@@ -14,7 +14,7 @@ fun Application.configureRouting() {
             call.respondText("Hello World!")
         }
         get("/fires") {
-            val fires = FireRepository.allFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location")
+            val fires = FireRepository.allFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location", false)
             call.respondText(
                 contentType = ContentType.parse("text/html"),
                 text = fires.fireAsTable()
@@ -22,25 +22,33 @@ fun Application.configureRouting() {
         }
 
         get("/fires/colorado") {
-            val fires = FireRepository.getFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location", 1.0)
+            val fires = FireRepository.getFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location", 1.0, false)
             call.respondText(
                 contentType = ContentType.parse("text/html"),
                 text = fires.fireAsTable()
             )
         }
 
-        get("/fires/colorado//boundaryDegree/{degrees}") {
+        get("/fires/colorado/counties") {
+            val fires = FireRepository.getFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location", 1.0, true)
+            call.respondText(
+                contentType = ContentType.parse("text/html"),
+                text = fires.fireAsTable()
+            )
+        }
+
+        get("/fires/colorado/boundaryDegree/{degrees}") {
             val boundary = call.parameters["degrees"]!!.toDouble()
-            val fires = FireRepository.getFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location", boundary)
+            val fires = FireRepository.getFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location", boundary, false)
             call.respondText(
                 contentType = ContentType.parse("text/html"),
                 text = fires.fireAsTable()
             )
         }
 
-        get("/fires/colorado//boundaryMile/{miles}") {
+        get("/fires/colorado/boundaryMile/{miles}") {
             val boundary = (call.parameters["miles"]!!.toDouble())/50
-            val fires = FireRepository.getFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location", boundary)
+            val fires = FireRepository.getFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location", boundary, false)
             call.respondText(
                 contentType = ContentType.parse("text/html"),
                 text = fires.fireAsTable()
@@ -48,7 +56,7 @@ fun Application.configureRouting() {
         }
 
         get("/test/jsonread") {
-            val fireListDisplay = getFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location", 1.0)
+            val fireListDisplay = getFires("https://api.watchduty.org/api/v1/geo_events/?geo_event_types=wildfire,location", 1.0, false)
             val textToDisplay=fireListDisplay.toString()
             call.respondText(textToDisplay)
         }
